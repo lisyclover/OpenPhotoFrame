@@ -401,19 +401,21 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           _buildSectionHeader(AppLocalizations.of(context)!.sectionSlideshow),
           const SizedBox(height: 8),
           
-          // Slide Duration
-          _buildSliderSetting(
-            icon: Icons.timer,
-            title: AppLocalizations.of(context)!.slideDuration,
-            value: _slideDurationMinutes.toDouble(),
-            min: 1,
-            max: 15,
-            divisions: 14,
-            unit: AppLocalizations.of(context)!.unitMinutes,
-            onChanged: (value) {
-              setState(() => _slideDurationMinutes = value.round());
-            },
-          ),
+          // Slide Duration (5s / 8s only)
+_buildSliderSetting(
+  icon: Icons.timer,
+  title: AppLocalizations.of(context)!.slideDuration,
+  value: _slideDurationMinutes.toDouble(),
+  min: 0,
+  max: 1,
+  divisions: 1,
+  unit: AppLocalizations.of(context)!.unitSeconds,
+  formatValue: (v) => v == 0 ? '5' : '8',
+  onChanged: (value) {
+    // 0 → 5s, 1 → 8s
+    setState(() => _slideDurationMinutes = (value.round() == 0 ? 5 : 8));
+  },
+),
           
           const SizedBox(height: 16),
           
