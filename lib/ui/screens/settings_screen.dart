@@ -126,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     
     final config = context.read<ConfigProvider>();
-    _slideDurationMinutes = (config.slideDurationSeconds / 60).round().clamp(1, 15);
+    _slideDurationSeconds = config.slideDurationSeconds.clamp(5, 8);
     _transitionDurationSeconds = (config.transitionDurationMs / 1000.0).clamp(0.5, 5.0);
     _blurBorders = config.blurBorders;
     // Default sync type: app_folder on Android, local_folder on Desktop
@@ -314,7 +314,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         _syncType == 'nextcloud_link' && 
         newNextcloudUrl.isNotEmpty;
     
-    config.slideDurationSeconds = _slideDurationMinutes * 60;
+    config.slideDurationSeconds = _slideDurationSeconds;
     config.transitionDurationMs = (_transitionDurationSeconds * 1000).round();
     config.blurBorders = _blurBorders;
     // app_folder and local_folder both use empty activeSourceType (no sync)
@@ -405,15 +405,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 _buildSliderSetting(
   icon: Icons.timer,
   title: AppLocalizations.of(context)!.slideDuration,
-  value: _slideDurationMinutes.toDouble(),
-  min: 0,
-  max: 1,
+  value: _slideDurationSeconds.toDouble(),
+  min: 5,
+  max: 8,
   divisions: 1,
   unit: AppLocalizations.of(context)!.unitSeconds,
-  formatValue: (v) => v == 0 ? '5' : '8',
+  formatValue: (v) => v == 5 ? '5' : '8',
   onChanged: (value) {
-    // 0 → 5s, 1 → 8s
-    setState(() => _slideDurationMinutes = (value.round() == 0 ? 5 : 8));
+    setState(() => _slideDurationSeconds = value.round());
   },
 ),
           
